@@ -1,0 +1,22 @@
+{
+  "name": "elmApp",
+  "version": "0.0.1",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "front": "elm make src/app.elm --output public/app.js",
+    "serve-f": "elm reactor",
+    "serve-b": "nodemon --exec \"elm make src/main.elm --output dist/main.js\"",
+    "install": "elm package install",
+    "back": "elm make src/main.elm --output=dist/main.js",
+    "elm": "elm"
+  },
+  "author": "airtucha",
+  "license": "ISC",
+  "dependencies": {
+    "elm": "^0.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1"
+  }
+}
