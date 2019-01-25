@@ -1,7 +1,7 @@
 {
-  "name": "elmApp",
+  "name": "elmDemo",
   "version": "0.0.1",
-  "description": "",
+  "description": "Full-stack Elm application based on Board ",
   "main": "main.js",
   "scripts": {
     "front": "elm make src/app.elm --output public/app.js",
@@ -17,6 +17,7 @@
     "elm": "^0.18.0"
   },
   "devDependencies": {
-    "nodemon": "^1.12.1"
+    "nodemon": "^1.12.1",
+    "elm-github-install": "^1.6.1"
   }
 }
