@@ -4,17 +4,19 @@
   "description": "Full-stack Elm application based on Board ",
   "main": "main.js",
   "scripts": {
+    "start": "nodemon --exec \"elm make src/main.elm --output dist/main.js && node local.js\"",
     "front": "elm make src/app.elm --output public/app.js",
     "serve-f": "elm reactor",
     "serve-b": "nodemon --exec \"elm make src/main.elm --output dist/main.js\"",
-    "install": "elm package install",
+    "install": "elm-install install",
     "back": "elm make src/main.elm --output=dist/main.js",
     "elm": "elm"
   },
   "author": "airtucha",
   "license": "ISC",
   "dependencies": {
-    "elm": "^0.18.0"
+    "elm": "^0.18.0",
+    "object-hash": "^1.3.1"
   },
   "devDependencies": {
     "nodemon": "^1.12.1",
