@@ -1,4 +1,4 @@
-port module Main exposing (..)
+port module App exposing (..)
 
 import Task
 import Board.File exposing(read)
@@ -40,19 +40,9 @@ router =
         |> useSyncState (p "/count" ) getCount
         |> useState (p "/async/count" ) getAsyncCount
         |> get (p "/") getIndex
-        -- |> useSync ( p "" </> any) (\ _ -> Debug.log "Ok" Redirect "ok")
         |> static (p "") "./public/"
-        -- |> get (p "/public/") getIndex
-        -- |> get (p "/public") getIndex
-        -- |> get (p "/public/index.html") getIndex
-        -- |> get (p "/app.js") getApp
-        -- |> get (p "/public/app.js") getApp
-        -- |> get (p "/styles.css") getStyles
         |> get (p "/styles.css") getStyle
-        -- |> get (p "/public/styles.css") getStyles
-        -- |> get (p "/public/style.css") getStyle
-        -- |> use any (redirect "/")
-        
+       
 
 getAsyncCount (param, req) =
     Task.succeed(\ model -> (model + 1, Reply <| makeTextResponse req (Basics.toString model) ))
@@ -98,10 +88,7 @@ makeResponse req path file =
         , id = req.id
         , status = ok
         , cookeis = res.cookeis
-            |> insert "test1" (cookei "testvalue1") 
-            -- |> insert "test2" (cookei "testvalue2") 
-            -- |> insert "test3" (cookei "testvalue3") 
-            -- |> insert "test4" (cookei "testvalue4") 
+            |> insert "test1" (cookei "testvalue1")
         } 
 
 

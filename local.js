@@ -1,2 +1,2 @@
 // load Elm module
-const app = require('./dist/main.js').Main.worker()
+const app = require('./dist/app.js').App.worker()

@@ -1,6 +1,6 @@
 
 import Html exposing (Html, input, label, div, text)
--- import Html.App as App
+
 import Html.Events exposing (onInput)
 
 -- main : Program Never
@@ -17,7 +17,7 @@ type alias Model = String
 
 model : Model
 model =
-  "Hello World"
+  "Hello World!"
 
 
 -- UPDATE
