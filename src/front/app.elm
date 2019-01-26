@@ -4,6 +4,7 @@ import Html exposing (Html, input, label, div, text)
 import Html.Events exposing (onInput)
 
 -- main : Program Never
+
 main =
   Html.beginnerProgram
     { model = model
