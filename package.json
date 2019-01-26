@@ -6,8 +6,7 @@
   "scripts": {
     "start": "nodemon --exec \"elm make src/main.elm --output dist/main.js && node local.js\"",
     "front": "elm make src/app.elm --output public/app.js",
-    "serve-f": "elm reactor",
-    "serve-b": "nodemon --exec \"elm make src/main.elm --output dist/main.js\"",
+    "reactor": "elm reactor",
     "install": "elm-install install",
     "back": "elm make src/main.elm --output=dist/main.js",
     "elm": "elm"
