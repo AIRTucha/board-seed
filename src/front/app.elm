@@ -1,35 +1,86 @@
 
-import Html exposing (Html, input, label, div, text)
+import Html exposing (Html, input, label, div, text, button)
 
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onClick)
+import Http exposing (getString, request, send, post, stringBody, expectString)
+import Debug exposing (log)
+import Json.Decode exposing (string)
 
 -- main : Program Never
 
 main =
-  Html.beginnerProgram
-    { model = model
+  Html.program
+    { init = ( model, getSession )
     , view = view
     , update = update
+    , subscriptions = \ _ -> Sub.none
     }
+
+getSession : Cmd Msg
+getSession = 
+  "/session"
+    |> getString 
+    |> send handleSession
+
+
+handleSession : Result error String -> Msg
+handleSession result =
+  case result of 
+    Ok str ->
+      HandleResponse str
+
+    Err msg ->
+      log "msg" msg
+        |> \_ -> HandleResponse "No session"
+
+
+
 
 -- MODEL
 
-type alias Model = String
+type alias Model =
+  { input: String 
+  , value: String
+  }
 
 model : Model
 model =
-  "Hello World!"
+  { input = ""
+  , value = "Wait status"
+  }
 
 
 -- UPDATE
 
-type Msg = UpdateName String
+type Msg
+  = HandleInput String
+  | HandleResponse String
+  | Send (Http.Request String)
 
-update : Msg -> Model -> Model
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    UpdateName name ->
-      "Hello " ++ name
+    HandleInput value ->
+      (
+        { model
+        | input = value
+        }
+        , 
+        Cmd.none
+      )
+    
+    HandleResponse value ->
+      (
+        { model
+        | value = value
+        }
+        , 
+        Cmd.none
+      )
+
+    Send req ->
+      (model, send handleSession req)
 
 
 -- VIEW
@@ -37,7 +88,19 @@ update msg model =
 view : Model -> Html Msg
 view model =
   div []
-    [ label [] [ text "Your Name: " ]
-    , input [ onInput UpdateName ] []
-    , div [] [ text model ]
+    [ input [ onInput HandleInput ] []
+    , button [ onClick <| postSession model.input ] [ text "Save" ]
+    , text model.value
     ]
+
+postSession str =
+    Send <| 
+    request
+      { method = "POST"
+      , headers = []
+      , url = "/session"
+      , body = stringBody "text/plain" str
+      , expect = expectString
+      , timeout = Nothing
+      , withCredentials = False
+      }

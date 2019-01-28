@@ -7,7 +7,9 @@
     "start": "nodemon --exec \"npm run back && npm run front && node local.js\"",
     "front": "elm make src/front/app.elm --output public/app.js",
     "back": "elm make src/back/app.elm --output=dist/app.js",
-    "install": "elm-install install"
+    "install": "elm-install install",
+    "add": "elm package install",
+    "elm": "elm"
   },
   "author": "airtucha",
   "license": "MIT",
