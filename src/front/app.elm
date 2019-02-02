@@ -1,10 +1,10 @@
 module Front.App exposing (..)
-import Html exposing (Html, input, label, div, text)
 
+import Html exposing (Html, input, label, div, text)
 import Html.Events exposing (onInput)
 
 -- main : Program Never
-
+main : Program Never Model Msg
 main =
   Html.beginnerProgram
     { model = model
