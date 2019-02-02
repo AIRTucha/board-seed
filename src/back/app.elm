@@ -1,4 +1,4 @@
-port module App exposing (..)
+port module Back.App exposing (..)
 
 import Task
 import Board.File exposing(read)
@@ -19,7 +19,7 @@ config =
     { state = 0
     , errorPrefix = Just "Warning"
     , options = 
-        { portNumber = 8081
+        { portNumber = 8083
         , timeout = 1000
         , https = Just 
             { key = Just "ok"
@@ -46,7 +46,6 @@ main = board router config suggestions
 -}
 router : Request value -> Mode String (Answer value number String)
 router =
-    -- logger "Request"
     empty
         |> useSyncState (p "/count" ) getCount
         |> useState (p "/async/count" ) getAsyncCount

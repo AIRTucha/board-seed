@@ -1,4 +1,4 @@
-
+module Front.App exposing (..)
 import Html exposing (Html, input, label, div, text)
 
 import Html.Events exposing (onInput)
