@@ -1,25 +1,25 @@
 port module App exposing (..)
 
 import Task
-import Maybe exposing (withDefault)
-import Debug exposing (log)
-import Board.File as File exposing(read)
+import Board.File exposing(read)
 import Pathfinder exposing (..)
 import Board exposing (..)
 import Board.Router exposing (..)
 import Board.Shared exposing (..)
-import Dict exposing(Dict, insert, member, size)
+import Dict exposing(insert)
 import Board.Status exposing (..)
 import Board.Router.Static exposing (..)
 import Board.Internals exposing (..)
+ 
 
 {-|
 -}
+config : { errorPrefix : Maybe String , options : { https : Maybe { cert : Maybe a , key : Maybe String , passphrase : Maybe a1 , pfx : Maybe String } , portNumber : number , timeout : number1 } , state : number2 }
 config = 
-    { state = Dict.empty
+    { state = 0
     , errorPrefix = Just "Warning"
     , options = 
-        { portNumber = 8080
+        { portNumber = 8081
         , timeout = 1000
         , https = Just 
             { key = Just "ok"
@@ -36,108 +36,37 @@ config =
 port suggestions : (String -> msg) -> Sub msg
 
 
-type alias Model =
-    Dict String String
-
-
 {-|
 -}
+main : Program Never number (Msg value1 number String)
 main = board router config suggestions
 
 
-paths =
-    { session = p "/session"
-    }
-
-
 {-|
 -}
+router : Request value -> Mode String (Answer value number String)
 router =
     -- logger "Request"
     empty
-        |> getSyncState paths.session getCount
-        |> postSyncState paths.session putCount
+        |> useSyncState (p "/count" ) getCount
+        |> useState (p "/async/count" ) getAsyncCount
         |> get (p "/") getIndex
         |> static (p "") "./public/"
-        |> getSync (p "/cookie") getCookie
         |> get (any) (redirect "/index.html")
-
-
-getSession (param, req) =
-    "session"
-        |> makeTextResponse req
-        |> Reply
-
-
-getCookie (param, req) =
-    Reply <| makeTextResponse req "placeholder"
-
--- {-|
--- -}
--- getAsyncCount : ( b, Request a ) -> Task.Task x (number -> ( number, AnswerValue a model error ))
--- getAsyncCount (param, req) =
---     Task.succeed(\ model -> (model + 1, Reply <| makeTextResponse req (Basics.toString model) ))
---insert sessionTag "" model
+       
 
 {-|
 -}
+getAsyncCount : ( b, Request a ) -> Task.Task x (number -> ( number, AnswerValue a model error ))
+getAsyncCount (param, req) =
+    Task.succeed(\ model -> (model + 1, Reply <| makeTextResponse req (Basics.toString model) ))
+
+
+{-|
+-}
+getCount : ( b, Request a ) -> number -> ( number, AnswerValue a model error )
 getCount (param, req) model =
-    let 
-        sessionTag = 
-            case Dict.get "session" req.cookies of
-                Just oldSessionTag ->
-                    oldSessionTag
-
-                Nothing ->
-                    (Basics.toString req.time) ++ "-" ++ (Basics.toString <| size model)
-        sessionValue = 
-            Dict.get sessionTag model
-    in
-        ( 
-            model,
-            (withDefault "No value for your session" sessionValue)
-                |> makeTextResponse req
-                |> Reply
-        )
-
-
-putCount : ( b , Request String ) -> Model -> ( Model, AnswerValue a1 model error )
-putCount (param, req) model =
-    let 
-        sessionTag = 
-            case Dict.get "session" req.cookies of
-                Just oldSessionTag ->
-                    oldSessionTag
-
-                Nothing ->
-                    (Basics.toString req.time) ++ "-" ++ (Basics.toString <| size model)
-    in
-        case req.content of 
-            Board.Shared.Data _ file ->    
-                let 
-                    newValue = file <| File.string File.ASCII
-                in
-                    (
-                        insert sessionTag newValue model, 
-                        newValue
-                            |> makeTextResponse req 
-                            |> addCookeis "session" sessionTag
-                            |> Reply
-                    )
-            _ ->
-                (
-                    model,
-                    Reply <| makeTextResponse req "something went wrong"
-                )
-
-             
-
-addCookeis name value res =
-    { res 
-    | cookeis = res.cookeis
-        |> insert name (cookei value) 
-    }
-
+    (model + 1, Reply <| makeTextResponse req (Basics.toString model) )
 
 
 {-|
@@ -166,20 +95,23 @@ getFile path (param, req)  =
 
 {-|
 -}
-makeResponse : Request a -> String -> File.File a1 -> Response a1
+makeResponse : Request a -> String -> Board.File.File a1 -> Response a1
 makeResponse req path file = 
     let 
         res = getResponse req
     in
         { res
-        | content = Data (File.getContentType path) file
+        | content = Data (Board.File.getContentType path) file
         , id = req.id
         , status = ok
+        , cookeis = res.cookeis
+            |> insert "test1" (cookei "testvalue1")
         } 
 
 
 {-|
 -}
+makeTextResponse : Request a -> String -> Response a
 makeTextResponse req text = 
     let 
         res = getResponse req
@@ -187,7 +119,11 @@ makeTextResponse req text =
         { res
         | content = Text "text/plain" text
         , id = req.id
-        , status = ok
+        , cookeis = res.cookeis
+            |> insert "test1" (cookei "testvalue1") 
+            |> insert "test2" (cookei "testvalue2") 
+            |> insert "test3" (cookei "testvalue3") 
+            |> insert "test4" (cookei "testvalue4") 
         } 
 
 
@@ -196,9 +132,9 @@ makeTextResponse req text =
 cookei : a -> { domain : Maybe String , httpOnly : Bool , lifetime : Maybe number , path : Maybe String , secure : Bool , value : a }
 cookei str = 
     { value = str
-    , httpOnly = False
+    , httpOnly = True
     , secure = False 
-    , lifetime = Just <| 24*60*60*1000
-    , domain = Nothing
-    , path = Nothing
+    , lifetime = Just 1000000000
+    , domain = Just "test.localhost"
+    , path = Just "/count"
     }
