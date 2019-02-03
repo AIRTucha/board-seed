@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "summary": "Seed project for full-stack Elm application based on Board",
+    "summary": "Seed project for full-stack Elm 0.18 application based on Board",
     "repository": "https://github.com/user/project.git",
     "license": "MIT",
     "source-directories": [

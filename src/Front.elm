@@ -14,7 +14,7 @@ main =
     }
 
 
-{-| Define simple initial String state
+{-| Define the application state
 -}
 type alias Model = String
 

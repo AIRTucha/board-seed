@@ -34,22 +34,15 @@ main : Program Never () (Msg value1 () String)
 main = board router config subPort
 
 
-{-| Router describes relationship between paths and request handlers
+{-| Router describes relationships between paths and request handlers
 -}
 router : Request value -> Mode String (Answer value model String)
 router =
+    -- No default actions at empty router
     empty
         -- statically serve files from "./public/"
-        |> static (p "") "./public/"   
+        |> static any "./public/"   
         -- redirect any unhandled request to "/index.html"                
-        |> getSync any (redirect "/index.html")        
-
-
-{-| Path handler, return index file as response.
-The first argument specifies redirection address.
--}
-redirect : String -> a -> AnswerValue value model error
-redirect str _ =
-   Redirect str
+        |> getSync any (\ _ -> Redirect "/index.html")        
 
 

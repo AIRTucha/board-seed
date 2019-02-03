@@ -1,6 +1,6 @@
 # Seed project for Board framework 
 
-Seed project for full-stack Elm application based on Board. 
+Seed project for full-stack Elm 0.18 application based on [Board](github.com/AIRTucha/board). 
 
 ## Back-end
 
@@ -9,16 +9,17 @@ The server is described by *./src/Back.elm*. The key part of server is *router*.
 ```elm
 router : Request value -> Mode String (Answer value model String)
 router =
+    -- No default actions at empty router
     empty
         -- statically serve files from "./public/"
-        |> static (p "") "./public/"   
+        |> static any "./public/"   
         -- redirect any unhandled request to "/index.html"                
-        |> getSync any (redirect "/index.html")           
+        |> getSync any (\ _ -> Redirect "/index.html")               
 ```
 
 The application runs on top of Node.js and it is booted by *./local.js*.
 
-[Board Example application](https://www.google.com) demonstrates more sophisticated server based on the library. 
+[Board Example application](github.com/AIRTucha/board-demo) demonstrates more sophisticated server based on the library. 
 
 ## Front-end
 
